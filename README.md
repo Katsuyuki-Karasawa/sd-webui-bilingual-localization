@@ -12,7 +12,7 @@
 bunx @biomejs/biome check --config-path=./biome.json
 
 # build
-bun build ./src/main.ts --outfile ./javascript/bilingual_localization.js --minify
+bun build ./src/main.ts --outfile ./javascript/bilingual_localization.js
 ```
 
 

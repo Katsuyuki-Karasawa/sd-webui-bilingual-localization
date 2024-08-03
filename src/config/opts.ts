@@ -1,4 +1,4 @@
-import { Opts } from "../types/opts";
+import type { Opts } from "../types/opts";
 
 export const opts: Opts = {
   bilingual_localization_enabled: true, // 初期値を設定

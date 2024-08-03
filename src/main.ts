@@ -1,4 +1,4 @@
-import { init } from './init';
+import { init } from "./init";
 interface I18n {
   [key: string]: string;
 }
@@ -19,13 +19,13 @@ interface Config {
   enableLogger: boolean;
 }
 
-let i18n: I18n | null = null;
-let i18nRegex: Map<RegExp, string> = new Map();
-let i18nScope: I18nScope = {};
-let scopedSource: ScopedSource = {};
-let config: Config | null = null;
+const i18n: I18n | null = null;
+const i18nRegex: Map<RegExp, string> = new Map();
+const i18nScope: I18nScope = {};
+const scopedSource: ScopedSource = {};
+const config: Config | null = null;
 
 // DOMContentLoaded イベント発生後に初期化処理を実行
-document.addEventListener('DOMContentLoaded', () => {
-    init()
+document.addEventListener("DOMContentLoaded", () => {
+  init();
 });

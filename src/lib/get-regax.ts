@@ -1,18 +1,24 @@
 // get regex object from string
-export function getRegex(regex) {
-        try {
-          regex = regex.trim();
-          let parts = regex.split('/');
-          if (regex[0] !== '/' || parts.length < 3) {
-            regex = regex.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); //escap common string
-            return new RegExp(regex);
-          }
-    
-          const option = parts[parts.length - 1];
-          const lastIndex = regex.lastIndexOf('/');
-          regex = regex.substring(1, lastIndex);
-          return new RegExp(regex, option);
-        } catch (e) {
-          return null
-        }
-      }
+export function getRegex(regexString: string): RegExp | null {
+  try {
+    const trimmedRegexString = regexString.trim();
+
+    if (
+      !trimmedRegexString.startsWith("/") ||
+      trimmedRegexString.split("/").length < 3
+    ) {
+      const escapedRegexString = trimmedRegexString.replace(
+        /[.*+\-?^${}()|[\]\\]/g,
+        "\\$&",
+      );
+      return new RegExp(escapedRegexString);
+    }
+
+    const lastSlashIndex = trimmedRegexString.lastIndexOf("/");
+    const regexPattern = trimmedRegexString.slice(1, lastSlashIndex);
+    const regexFlags = trimmedRegexString.slice(lastSlashIndex + 1);
+    return new RegExp(regexPattern, regexFlags);
+  } catch (e) {
+    return null;
+  }
+}

@@ -5,9 +5,13 @@
 
 ![Snipaste_2023-03-30_01-05-45](https://user-images.githubusercontent.com/16256221/228617304-3107244b-ce13-4b96-b665-1d13090d24a7.png)
 
-## Build
+## Development
 
 ```bash
+# format & lint
+bunx @biomejs/biome check --config-path=./biome.json
+
+# build
 bun build ./src/main.ts --outfile ./javascript/bilingual_localization.js --minify
 ```
 

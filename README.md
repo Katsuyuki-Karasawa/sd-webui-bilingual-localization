@@ -9,7 +9,7 @@
 
 ```bash
 # format & lint
-bunx @biomejs/biome check --config-path=./biome.json
+bunx @biomejs/biome check --write --unsafe --config-path=./biome.json
 
 # build
 bun build ./src/main.ts --outfile ./javascript/bilingual_localization.js

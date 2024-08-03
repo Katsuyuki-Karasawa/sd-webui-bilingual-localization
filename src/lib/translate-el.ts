@@ -1,4 +1,4 @@
-import { getI18n } from "../setup";
+import { getConfig, getI18n } from "../setup";
 import { doTranslate } from "./do-translate";
 
 const ignore_selector = [
@@ -9,6 +9,11 @@ const ignore_selector = [
   "#txt2img_styles, #img2txt_styles", // styles select
   ".extra-network-cards .card .actions .name", // extra network cards name
   "script, style, svg, g, path", // script / style / svg elements
+  "svg *, canvas, canvas *",
+  "#txt2img_prompt_container, #img2img_prompt_container, .physton-prompt",
+  "#txt2img_prompt_container *, #img2img_prompt_container *, .physton-prompt *",
+  ".progressDiv, .progress, .progress-text",
+  ".progressDiv *, .progress *, .progress-text *",
 ];
 
 export function translateEl(el, { deep = false, rich = false } = {}) {
@@ -19,7 +24,7 @@ export function translateEl(el, { deep = false, rich = false } = {}) {
     doTranslate(el, el.title, "title");
   }
 
-  if (el.placeholder) {
+  if (el.placeholder && getConfig()?.enableTransPlaceHolder === true) {
     doTranslate(el, el.placeholder, "placeholder");
   }
 

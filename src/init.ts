@@ -10,7 +10,7 @@ const customCSS = `
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    font-size: 13px;
+    font-size: var(--section-header-text-size);
     line-height: 1;
     }
 
@@ -46,7 +46,6 @@ const customCSS = `
     .posex_setting_cont .bilingual__trans_wrapper:not(.posex_bg .bilingual__trans_wrapper), /* Posex extension */
     #dynamic-prompting .bilingual__trans_wrapper
     {
-    font-size: 12px;
     align-items: flex-start;
     }
 

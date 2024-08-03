@@ -11,13 +11,13 @@
   "formatter": {
     "indentStyle": "space",
     "lineEnding": "crlf",
-    "ignore": ["./javascript", "./scripts"]
+    "ignore": ["javascript", "scripts"]
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true
     },
-    "ignore": ["./javascript", "./scripts"]
+    "ignore": ["javascript", "scripts"]
   }
 }

@@ -148,7 +148,7 @@ function translateEl(el, { deep = false, rich = false } = {}) {
   if (el.title) {
     doTranslate(el, el.title, "title");
   }
-  if (el.placeholder) {
+  if (el.placeholder && getConfig()?.enableTransPlaceHolder === true) {
     doTranslate(el, el.placeholder, "placeholder");
   }
   if (el.tagName === "OPTION") {
@@ -179,7 +179,12 @@ var ignore_selector = [
   "#setting_sd_vae select",
   "#txt2img_styles, #img2txt_styles",
   ".extra-network-cards .card .actions .name",
-  "script, style, svg, g, path"
+  "script, style, svg, g, path",
+  "svg *, canvas, canvas *",
+  "#txt2img_prompt_container, #img2img_prompt_container, .physton-prompt",
+  "#txt2img_prompt_container *, #img2img_prompt_container *, .physton-prompt *",
+  ".progressDiv, .progress, .progress-text",
+  ".progressDiv *, .progress *, .progress-text *"
 ];
 
 // src/lib/tranlate-page.ts
@@ -347,13 +352,21 @@ function doTranslate(el, source, type) {
   if (config2?.order === "Original First") {
     [trimmedSource, translation] = [translation, trimmedSource];
   }
+  const isTranslationIncludeSource = translation.startsWith(source);
   switch (type) {
     case "text":
       el.textContent = translation;
       break;
     case "element": {
-      const htmlStr = `<div class="bilingual__trans_wrapper">${htmlEncode(translation)}<em>${htmlEncode(trimmedSource)}</em></div>`;
-      const htmlEl = parseHtmlStringToElement(htmlStr);
+      if (isTranslationIncludeSource) {
+        if (el.nodeType === 3) {
+          el.nodeValue = translation;
+        } else if (htmlEncode(el.textContent) === el.innerHTML) {
+          el.innerHTML = htmlEncode(translation);
+        }
+        break;
+      }
+      const htmlEl = parseHtmlStringToElement(`<div class="bilingual__trans_wrapper">${htmlEncode(translation)}<em>${htmlEncode(source)}</em></div>`);
       if (el.hasChildNodes()) {
         const textNode = Array.from(el.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim() === trimmedSource || node.textContent?.trim() === "__bilingual__will_be_replaced__");
         if (textNode) {
@@ -377,13 +390,13 @@ function doTranslate(el, source, type) {
       break;
     }
     case "option":
-      el.textContent = `${translation} (${trimmedSource})`;
+      el.textContent = isTranslationIncludeSource ? translation : `${translation} (${trimmedSource})`;
       break;
     case "title":
-      el.title = `${translation}\n${trimmedSource}`;
+      el.title = isTranslationIncludeSource ? translation : `${translation}\n${trimmedSource}`;
       break;
     case "placeholder":
-      el.placeholder = `${translation}\n\n${trimmedSource}`;
+      el.placeholder = isTranslationIncludeSource ? translation : `${translation}\n\n${trimmedSource}`;
       break;
     default:
       return translation;
@@ -458,7 +471,7 @@ var customCSS = `
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    font-size: 13px;
+    font-size: var(--section-header-text-size);
     line-height: 1;
     }
 
@@ -494,7 +507,6 @@ var customCSS = `
     .posex_setting_cont .bilingual__trans_wrapper:not(.posex_bg .bilingual__trans_wrapper), /* Posex extension */
     #dynamic-prompting .bilingual__trans_wrapper
     {
-    font-size: 12px;
     align-items: flex-start;
     }
 
@@ -549,7 +561,4 @@ var customCSS = `
     `;
 
 // src/main.ts
-var i18nRegex2 = new Map;
-document.addEventListener("DOMContentLoaded", () => {
-  init();
-});
+document.addEventListener("DOMContentLoaded", init);

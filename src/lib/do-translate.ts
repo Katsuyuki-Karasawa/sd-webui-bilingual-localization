@@ -42,14 +42,26 @@ export function doTranslate(el, source, type) {
     [trimmedSource, translation] = [translation, trimmedSource];
   }
 
+  const isTranslationIncludeSource = translation.startsWith(source);
+
   switch (type) {
     case "text":
       el.textContent = translation;
       break;
 
     case "element": {
-      const htmlStr = `<div class="bilingual__trans_wrapper">${htmlEncode(translation)}<em>${htmlEncode(trimmedSource)}</em></div>`;
-      const htmlEl = parseHtmlStringToElement(htmlStr);
+      if (isTranslationIncludeSource) {
+        if (el.nodeType === 3) {
+          el.nodeValue = translation;
+        } else if (htmlEncode(el.textContent) === el.innerHTML) {
+          el.innerHTML = htmlEncode(translation);
+        }
+        break;
+      }
+
+      const htmlEl = parseHtmlStringToElement(
+        `<div class="bilingual__trans_wrapper">${htmlEncode(translation)}<em>${htmlEncode(source)}</em></div>`,
+      );
 
       if (el.hasChildNodes()) {
         const textNode = Array.from(el.childNodes).find(
@@ -92,15 +104,21 @@ export function doTranslate(el, source, type) {
     }
 
     case "option":
-      el.textContent = `${translation} (${trimmedSource})`;
+      el.textContent = isTranslationIncludeSource
+        ? translation
+        : `${translation} (${trimmedSource})`;
       break;
 
     case "title":
-      el.title = `${translation}\n${trimmedSource}`;
+      el.title = isTranslationIncludeSource
+        ? translation
+        : `${translation}\n${trimmedSource}`;
       break;
 
     case "placeholder":
-      el.placeholder = `${translation}\n\n${trimmedSource}`;
+      el.placeholder = isTranslationIncludeSource
+        ? translation
+        : `${translation}\n\n${trimmedSource}`;
       break;
 
     default:
